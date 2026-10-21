@@ -1,0 +1,12 @@
+# Run after measuring defaults. Identical durability; shorter failure detection.
+services:
+  raftdb-node1:
+    environment: {RAFTDB_PROFILE: tuned}
+  raftdb-node2:
+    environment: {RAFTDB_PROFILE: tuned}
+  raftdb-node3:
+    environment: {RAFTDB_PROFILE: tuned}
+  raftdb-node4:
+    environment: {RAFTDB_PROFILE: tuned}
+  raftdb-node5:
+    environment: {RAFTDB_PROFILE: tuned}

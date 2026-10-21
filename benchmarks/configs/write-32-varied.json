@@ -1,0 +1,15 @@
+{
+  "proto": "api/raftdb.proto",
+  "insecure": true,
+  "concurrency": 100,
+  "connections": 10,
+  "duration": "60s",
+  "timeout": "3s",
+  "format": "json",
+  "call": "raftdb.v1.Database.Put",
+  "data": {
+    "key": "write-{{.RequestNumber}}",
+    "value": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+  },
+  "duration-stop": "wait"
+}

@@ -1,0 +1,10 @@
+[
+  {"key": "demo:project", "value": "RaftDB"},
+  {"key": "demo:message", "value": "Hello from a five-node Go database"},
+  {"key": "demo:user:ada", "value": "Ada Lovelace"},
+  {"key": "demo:user:grace", "value": "Grace Hopper"},
+  {"key": "demo:language", "value": "Go"},
+  {"key": "demo:consensus", "value": "HashiCorp Raft"},
+  {"key": "demo:status", "value": "Learning distributed systems"},
+  {"key": "demo:counter", "value": "0"}
+]

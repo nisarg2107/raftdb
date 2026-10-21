@@ -1,0 +1,9 @@
+.tools/
+bin/
+data/
+benchmarks/results/*
+!benchmarks/results/.gitkeep
+*.prof
+*.test
+*.exe
+__pycache__/

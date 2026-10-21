@@ -1,0 +1,40 @@
+syntax = "proto3";
+package raftdb.v1;
+option go_package = "raftdb/api;api";
+
+service Database {
+  rpc Put(PutRequest) returns (Empty);
+  rpc Get(Key) returns (Value);
+  // Bounded batches: 1..128 operations and 256 KiB aggregate request data.
+  rpc BatchGet(BatchGetRequest) returns (BatchGetResponse);
+  // All entries validate before enqueue; success requires durable commit/apply.
+  rpc BatchPut(BatchPutRequest) returns (Empty);
+  rpc Delete(Key) returns (Empty);
+  // This method is explicitly potentially stale and is never a consistent read.
+  rpc GetLocal(Key) returns (Value);
+  rpc Status(Empty) returns (NodeStatus);
+  rpc Health(Empty) returns (HealthResponse);
+  rpc Snapshot(Empty) returns (Empty);
+}
+message Empty {}
+message Key { string key = 1; }
+message PutRequest { string key = 1; string value = 2; }
+message Value { string value = 1; }
+message BatchGetRequest { repeated string keys = 1; }
+message LookupResult { bool found = 1; string value = 2; }
+message BatchGetResponse { repeated LookupResult results = 1; }
+message BatchPutRequest { repeated PutRequest entries = 1; }
+message Member { string id = 1; string raft_address = 2; string suffrage = 3; }
+message NodeStatus {
+  string id = 1;
+  string state = 2;
+  uint64 term = 3;
+  string leader_id = 4;
+  string leader_grpc = 5;
+  uint64 last_log_index = 6;
+  uint64 applied_index = 7;
+  uint64 commit_index = 8;
+  repeated Member members = 9;
+  uint64 first_log_index = 10;
+}
+message HealthResponse { bool serving = 1; }

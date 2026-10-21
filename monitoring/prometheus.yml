@@ -1,0 +1,6 @@
+global:
+  scrape_interval: 2s
+scrape_configs:
+  - job_name: raftdb
+    static_configs:
+      - targets: [raftdb-node1:9091, raftdb-node2:9091, raftdb-node3:9091, raftdb-node4:9091, raftdb-node5:9091]

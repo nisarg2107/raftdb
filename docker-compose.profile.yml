@@ -1,0 +1,17 @@
+# Optional private profiling endpoints for local experiments.
+services:
+  raftdb-node1:
+    environment: {RAFTDB_PPROF: "0.0.0.0:6060"}
+    ports: ["127.0.0.1:6161:6060"]
+  raftdb-node2:
+    environment: {RAFTDB_PPROF: "0.0.0.0:6060"}
+    ports: ["127.0.0.1:6162:6060"]
+  raftdb-node3:
+    environment: {RAFTDB_PPROF: "0.0.0.0:6060"}
+    ports: ["127.0.0.1:6163:6060"]
+  raftdb-node4:
+    environment: {RAFTDB_PPROF: "0.0.0.0:6060"}
+    ports: ["127.0.0.1:6164:6060"]
+  raftdb-node5:
+    environment: {RAFTDB_PPROF: "0.0.0.0:6060"}
+    ports: ["127.0.0.1:6165:6060"]

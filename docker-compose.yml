@@ -1,0 +1,71 @@
+name: raftdb
+x-node: &node
+  build: .
+  image: ${RAFTDB_IMAGE:-raftdb:dev}
+  restart: unless-stopped
+  environment:
+    GOMEMLIMIT: 512MiB
+    # Go 1.24 does not automatically size GOMAXPROCS from the CPU quota.
+    GOMAXPROCS: "${RAFTDB_GOMAXPROCS:-2}"
+    RAFTDB_READ_BATCH_WINDOW: ${READ_BATCH_WINDOW:-200us}
+    RAFTDB_WRITE_PIPELINE: ${RAFTDB_WRITE_PIPELINE:-8}
+    RAFTDB_STORAGE: ${RAFTDB_STORAGE:-bolt}
+    RAFTDB_BATCH_APPLY: ${BATCH_APPLY:-false}
+    RAFTDB_PEERS: node1=raftdb-node1:7000=raftdb-node1:50051,node2=raftdb-node2:7000=raftdb-node2:50051,node3=raftdb-node3:7000=raftdb-node3:50051,node4=raftdb-node4:7000=raftdb-node4:50051,node5=raftdb-node5:7000=raftdb-node5:50051
+  mem_limit: 768m
+  cpus: ${RAFTDB_CPUS:-2.0}
+  healthcheck:
+    test: [CMD, raftctl, -addresses, localhost:50051, -timeout, 2s, health]
+    interval: 3s
+    timeout: 3s
+    retries: 20
+  networks: [cluster]
+services:
+  raftdb-node1:
+    <<: *node
+    command: ["-id=node1", "-raft=raftdb-node1:7000", "-bootstrap", "-data=/data", "-grpc=0.0.0.0:50051", "-metrics=0.0.0.0:9091"]
+    ports: ["127.0.0.1:${GRPC1:-50051}:50051", "127.0.0.1:${METRICS1:-9091}:9091"]
+    volumes: [node1:/data]
+  raftdb-node2:
+    <<: *node
+    command: ["-id=node2", "-raft=raftdb-node2:7000", "-data=/data", "-grpc=0.0.0.0:50051", "-metrics=0.0.0.0:9091"]
+    ports: ["127.0.0.1:${GRPC2:-50052}:50051", "127.0.0.1:${METRICS2:-9092}:9091"]
+    volumes: [node2:/data]
+  raftdb-node3:
+    <<: *node
+    command: ["-id=node3", "-raft=raftdb-node3:7000", "-data=/data", "-grpc=0.0.0.0:50051", "-metrics=0.0.0.0:9091"]
+    ports: ["127.0.0.1:${GRPC3:-50053}:50051", "127.0.0.1:${METRICS3:-9093}:9091"]
+    volumes: [node3:/data]
+  raftdb-node4:
+    <<: *node
+    command: ["-id=node4", "-raft=raftdb-node4:7000", "-data=/data", "-grpc=0.0.0.0:50051", "-metrics=0.0.0.0:9091"]
+    ports: ["127.0.0.1:${GRPC4:-50054}:50051", "127.0.0.1:${METRICS4:-9094}:9091"]
+    volumes: [node4:/data]
+  raftdb-node5:
+    <<: *node
+    command: ["-id=node5", "-raft=raftdb-node5:7000", "-data=/data", "-grpc=0.0.0.0:50051", "-metrics=0.0.0.0:9091"]
+    ports: ["127.0.0.1:${GRPC5:-50055}:50051", "127.0.0.1:${METRICS5:-9095}:9091"]
+    volumes: [node5:/data]
+  prometheus:
+    image: prom/prometheus:v3.7.3
+    volumes: ["./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro", "prometheus:/prometheus"]
+    ports: ["127.0.0.1:${PROMETHEUS_PORT:-9090}:9090"]
+    networks: [cluster]
+  grafana:
+    image: grafana/grafana:12.2.1
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: raftdb-demo
+    volumes: ["./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro", "./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro", "grafana:/var/lib/grafana"]
+    ports: ["127.0.0.1:${GRAFANA_PORT:-3000}:3000"]
+    networks: [cluster]
+networks:
+  cluster: {}
+volumes:
+  node1: {}
+  node2: {}
+  node3: {}
+  node4: {}
+  node5: {}
+  prometheus: {}
+  grafana: {}

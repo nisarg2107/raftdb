@@ -1,0 +1,7 @@
+# Opt in only for fault experiments. Normal Compose has no NET_ADMIN.
+services:
+  raftdb-node1: {cap_add: [NET_ADMIN]}
+  raftdb-node2: {cap_add: [NET_ADMIN]}
+  raftdb-node3: {cap_add: [NET_ADMIN]}
+  raftdb-node4: {cap_add: [NET_ADMIN]}
+  raftdb-node5: {cap_add: [NET_ADMIN]}
